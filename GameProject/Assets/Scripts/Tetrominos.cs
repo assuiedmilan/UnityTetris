@@ -25,5 +25,4 @@ public struct TetrominoData
     {
         cells = TetrominosCoordinates.Cells[tetromino];
     }
-
 }

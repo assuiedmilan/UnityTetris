@@ -14,9 +14,15 @@ public class Piece : MonoBehaviour
         CurrentTetrominoData = data;
         Cells ??= new Vector3Int[CurrentTetrominoData.cells.Length];
 
+        SetCells();
+    }
+
+    private void SetCells()
+    {
         for(var i = 0; i < Cells.Length; i++)
         {
             Cells[i] = (Vector3Int) CurrentTetrominoData.cells[i];
         }
     }
+
 }
