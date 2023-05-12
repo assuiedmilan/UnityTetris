@@ -56,13 +56,12 @@ public class Board : MonoBehaviour
 
     private bool IsCellPositionInValid(Vector3Int cellToCheck)
     {
-        return !Boundaries.Contains((Vector2Int)cellToCheck) || Tilemap.HasTile(cellToCheck);
+        return !Boundaries.Contains((Vector2Int)cellToCheck);
     }
     
     private void SpawnPiece()
     {
         var shapeIndex = Random.Range(1, tetrominos.Length);
-        shapeIndex = 0;
         CurrentPiece.Initialize(this, spawnPosition, tetrominos[shapeIndex]);
         DrawPiece(CurrentPiece);
     }
