@@ -6,18 +6,31 @@ public class Board : MonoBehaviour
 {
     [SerializeField] public TetrominoData[] tetrominos;
     [SerializeField] public Vector3Int spawnPosition;
+    [SerializeField] public GameObject visualGrid;
+    
     public Tilemap Tilemap { get; private set; }
     public Piece CurrentPiece { get; private set; }
+    public Vector2Int BoardSize { get; private set; }
+    private Vector2Int BoardLowerOrigin { get; set; }
+    
+    public RectInt Boundaries => new(BoardLowerOrigin, BoardSize);
 
     private void Awake()
     {
         Tilemap = GetComponentInChildren<Tilemap>();
         CurrentPiece = GetComponentInChildren<Piece>();
-        
-        for(var i = 0; i < tetrominos.Length; i++)
+
+        for (var i = 0; i < tetrominos.Length; i++)
         {
             tetrominos[i].Initialize();
         }
+
+        var gridSize = visualGrid.GetComponent<SpriteRenderer>().size;
+        BoardSize = new Vector2Int((int) gridSize.x, (int) gridSize.y);
+        BoardLowerOrigin = new Vector2Int(
+            -BoardSize.x / 2,
+            -BoardSize.y / 2
+            );
     }
 
     private void Start()
@@ -25,23 +38,51 @@ public class Board : MonoBehaviour
         SpawnPiece();
     }
 
+    public bool IsPositionInValid(Piece piece, Vector3Int newPiecePosition)
+    {
+        // ReSharper disable once LoopCanBeConvertedToQuery: Performance
+        foreach (var cell in piece.Cells)
+        {
+            var newOccupiedCell = cell + piece.CenterCoordinates;
+
+            if (IsCellPositionInValid(newOccupiedCell))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private bool IsCellPositionInValid(Vector3Int cellToCheck)
+    {
+        return !Boundaries.Contains((Vector2Int)cellToCheck) || Tilemap.HasTile(cellToCheck);
+    }
+    
     private void SpawnPiece()
     {
         var shapeIndex = Random.Range(0, tetrominos.Length);
         CurrentPiece.Initialize(this, spawnPosition, tetrominos[shapeIndex]);
-        UpdateCellsOccupiedByCurrentTetromino(CurrentPiece);
+        DrawPiece(CurrentPiece);
     }
     
-    private void UpdateCellsOccupiedByCurrentTetromino(Piece piece)
+    public void ClearPiece(Piece piece)
     {
-        Vector3Int currentOccupiedCell = new();
-        
+        UpdateTilemap(piece, null);
+
+    }
+    
+    public void DrawPiece(Piece piece)
+    {
+        UpdateTilemap(piece, piece.CurrentTetrominoData.tile);
+    }
+
+    private void UpdateTilemap(Piece piece, TileBase tile)
+    {
         foreach (var cell in piece.Cells)
         {
-            currentOccupiedCell = cell + piece.Position;
-            Tilemap.SetTile(currentOccupiedCell, piece.CurrentTetrominoData.tile);
+            var currentOccupiedCell = cell + piece.CenterCoordinates;
+            Tilemap.SetTile(currentOccupiedCell, tile);
         }
     }
-    
-
 }
