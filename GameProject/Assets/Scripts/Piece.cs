@@ -28,11 +28,6 @@ public class Piece : MonoBehaviour
     private void Update()
     {
         Board.ClearPiece(this);
-        
-        /*if (Time.time > _timeAtWhichAutomaticMovementDownOccurs)
-        {
-            MoveDownOneRow();
-        }*/
 
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
@@ -43,9 +38,9 @@ public class Piece : MonoBehaviour
             Move(Vector2Int.right);
         }
         
-        if (Input.GetKeyDown(KeyCode.DownArrow))
+        if (Input.GetKeyDown(KeyCode.DownArrow) || Time.time > _timeAtWhichAutomaticMovementDownOccurs)
         {
-            Move(Vector2Int.down);
+            MoveDownOneRow();
         }
 
         if (Input.GetKeyDown(KeyCode.Q))

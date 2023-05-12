@@ -18,6 +18,7 @@ public struct TetrominosCoordinates
         { TetrominoShapes.Z, new Vector2Int[] { new (-1, 1), new ( 0, 1), new ( 0, 0), new ( 1, 0) } },
     };
 
+    // https://tetris.wiki/Super_Rotation_System
     private static readonly Vector2Int[,] WallKicksI = {
         { new (0, 0), new (-2, 0), new ( 1, 0), new (-2,-1), new ( 1, 2) },
         { new (0, 0), new ( 2, 0), new (-1, 0), new ( 2, 1), new (-1,-2) },
