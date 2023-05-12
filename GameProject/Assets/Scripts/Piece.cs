@@ -24,6 +24,8 @@ public class Piece : MonoBehaviour
 
     private void Update()
     {
+        Board.ClearPiece(this);
+        
         /*if (Time.time > _timeAtWhichAutomaticMovementDownOccurs)
         {
             MoveDownOneRow();
@@ -45,6 +47,8 @@ public class Piece : MonoBehaviour
         {
             Move(Vector2Int.up);
         }
+        
+        Board.DrawPiece(this);
     }
 
     private void MoveDownOneRow()
@@ -56,16 +60,13 @@ public class Piece : MonoBehaviour
     private void Move(Vector2Int movement)
     {
         var newPosition = new Vector3Int(CenterCoordinates.x + movement.x, CenterCoordinates.y + movement.y, 0);
-
+        
         if (Board.IsPositionInValid(this, newPosition))
         {
             return;
         }
 
-        Board.ClearPiece(this);
         CenterCoordinates = newPosition;
-        Board.DrawPiece(this);
-        
     }
 
     private void UpdateTimeAtWhichAutomaticMovementDownOccurs()

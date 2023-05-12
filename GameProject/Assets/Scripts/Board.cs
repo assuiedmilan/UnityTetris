@@ -57,7 +57,7 @@ public class Board : MonoBehaviour
 
     private bool IsCellPositionInValid(Vector3Int cellToCheck)
     {
-        return !_boundaries.Contains((Vector2Int)cellToCheck) ||;
+        return !_boundaries.Contains((Vector2Int)cellToCheck) || Tilemap.HasTile(cellToCheck);
     }
     
     private void SpawnPiece()
@@ -78,7 +78,6 @@ public class Board : MonoBehaviour
     public void ClearPiece(Piece piece)
     {
         UpdateTilemap(piece, null);
-
     }
     
     public void DrawPiece(Piece piece)
