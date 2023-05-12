@@ -5,11 +5,10 @@ public struct TetrominosCoordinates
 {
     private static readonly float Cos = Mathf.Cos(Mathf.PI / 2f);
     private static readonly float Sin = Mathf.Sin(Mathf.PI / 2f);
-    private static readonly float[] RotationMatrix = new[] { Cos, Sin, -Sin, Cos };
+    public static readonly float[] RotationMatrix = new[] { Cos, Sin, -Sin, Cos };
 
     public static readonly Dictionary<TetrominoShapes, Vector2Int[]> Cells = new()
     {
-        { TetrominoShapes.Debug, new Vector2Int[] { new (0, 0) } },
         { TetrominoShapes.I, new Vector2Int[] { new (-1, 1), new ( 0, 1), new ( 1, 1), new ( 2, 1) } },
         { TetrominoShapes.J, new Vector2Int[] { new (-1, 1), new (-1, 0), new ( 0, 0), new ( 1, 0) } },
         { TetrominoShapes.L, new Vector2Int[] { new ( 1, 1), new (-1, 0), new ( 0, 0), new ( 1, 0) } },

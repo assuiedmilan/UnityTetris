@@ -1,11 +1,9 @@
 using System;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
 
 public enum TetrominoShapes
 {
-    Debug,
     I,
     O,
     T,
@@ -18,12 +16,14 @@ public enum TetrominoShapes
 [Serializable]
 public struct TetrominoData
 {
-    [FormerlySerializedAs("Tetromino")] public TetrominoShapes tetromino;
-    [FormerlySerializedAs("Tile")] public Tile tile;
-    [FormerlySerializedAs("Cells")] public Vector2Int[] cells;
+    public TetrominoShapes tetromino;
+    public Tile tile;
+    public Vector2Int[] cells;
+    public Vector2Int[,] WallKicks { get; private set; }
 
     public void Initialize()
     {
         cells = TetrominosCoordinates.Cells[tetromino];
+        WallKicks = TetrominosCoordinates.WallKicks[tetromino];
     }
 }

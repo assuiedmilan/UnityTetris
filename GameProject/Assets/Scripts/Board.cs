@@ -82,7 +82,7 @@ public class Board : MonoBehaviour
     
     public void DrawPiece(Piece piece)
     {
-        UpdateTilemap(piece, piece.CurrentTetrominoData.tile);
+        UpdateTilemap(piece, piece.TetrominoData.tile);
     }
 
     private void UpdateTilemap(Piece piece, TileBase tile)
