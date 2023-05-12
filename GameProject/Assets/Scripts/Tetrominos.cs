@@ -5,6 +5,7 @@ using UnityEngine.Tilemaps;
 
 public enum TetrominoShapes
 {
+    Debug,
     I,
     O,
     T,

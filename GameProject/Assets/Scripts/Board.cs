@@ -61,7 +61,8 @@ public class Board : MonoBehaviour
     
     private void SpawnPiece()
     {
-        var shapeIndex = Random.Range(0, tetrominos.Length);
+        var shapeIndex = Random.Range(1, tetrominos.Length);
+        shapeIndex = 0;
         CurrentPiece.Initialize(this, spawnPosition, tetrominos[shapeIndex]);
         DrawPiece(CurrentPiece);
     }
