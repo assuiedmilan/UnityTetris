@@ -24,9 +24,26 @@ public class Piece : MonoBehaviour
 
     private void Update()
     {
-        if (Time.time > _timeAtWhichAutomaticMovementDownOccurs)
+        /*if (Time.time > _timeAtWhichAutomaticMovementDownOccurs)
         {
             MoveDownOneRow();
+        }*/
+
+        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            Move(Vector2Int.left);
+        }
+        else if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            Move(Vector2Int.right);
+        }
+        else if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            Move(Vector2Int.down);
+        }
+        else if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            Move(Vector2Int.up);
         }
     }
 
