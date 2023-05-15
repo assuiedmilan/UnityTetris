@@ -64,6 +64,10 @@ public class Board : MonoBehaviour
     {
         var shapeIndex = Random.Range(1, tetrominos.Length);
         CurrentPiece.Initialize(this, spawnPosition, tetrominos[shapeIndex]);
+        
+        if (IsPositionInValid(CurrentPiece, spawnPosition)) {
+            GameOver();
+        }
     }
 
     /*private void SpawnDebugPiece()
@@ -102,6 +106,11 @@ public class Board : MonoBehaviour
         }
     }
 
+    private void GameOver()
+    {
+        Tilemap.ClearAllTiles();
+    }
+    
     private void UpdateTilemap(Piece piece, TileBase tile)
     {
         foreach (var cell in piece.Cells)

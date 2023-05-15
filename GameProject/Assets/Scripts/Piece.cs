@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class Piece : MonoBehaviour
 {
@@ -11,10 +12,12 @@ public class Piece : MonoBehaviour
     public float automaticMovementDownStepDelay = 1f;
     public float lockThePieceAfterCollisionDelay = 0.5f;
     public float delayBetweenSameInputWhenKeyIsHold = 0.1f;
-
+    public float hardDropStepDelay = 0.05f;
+    
     private float _timeAtWhichAutomaticMovementDownOccurs;
     private float _timeAtWhichNextInputIsConsidered;
     private float _timeAtWhichLockOccurs;
+    private float _timeAtWhichNextHardDropOccurs;
 
     public void Initialize(Board board, Vector3Int position, TetrominoData data)
     {
@@ -72,6 +75,10 @@ public class Piece : MonoBehaviour
             }
         }
 
+        if (Input.GetKeyDown(KeyCode.Space)) {
+            HardDrop();
+        }
+        
         if (ShouldMoveDownAutomatically())
         {
             MoveDownOneRow();
@@ -89,6 +96,12 @@ public class Piece : MonoBehaviour
         {
             TryLock();
         }
+    }
+    
+    private void HardDrop()
+    {
+        while (Move(Vector2Int.down)) {}
+        Lock();
     }
 
     private bool Move(Vector2Int movement)
@@ -119,9 +132,14 @@ public class Piece : MonoBehaviour
     private void TryLock()
     {
         if (!(ShouldLock())) return;
+        Lock();
+    }
+
+    private void Lock()
+    {
         Board.DrawPiece(this);
         Board.ClearLines();
-        Board.SpawnPiece();
+        Board.SpawnPiece();        
     }
 
     private bool TestWallKicks(int rotationIndex, int rotationDirection)
