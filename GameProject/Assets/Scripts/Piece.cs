@@ -10,8 +10,10 @@ public class Piece : MonoBehaviour
 
     public float automaticMovementDownStepDelay = 1f;
     public float lockThePieceAfterCollisionDelay = 0.5f;
+    public float delayBetweenSameInputWhenKeyIsHold = 0.1f;
 
     private float _timeAtWhichAutomaticMovementDownOccurs;
+    private float _timeAtWhichNextInputIsConsidered;
     private float _timeAtWhichLockOccurs;
 
     public void Initialize(Board board, Vector3Int position, TetrominoData data)
@@ -32,21 +34,13 @@ public class Piece : MonoBehaviour
     private void Update()
     {
         Board.ClearPiece(this);
+        ProcessRotations();
+        ProcessTranslations();
+        Board.DrawPiece(this);
+    }
 
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            Move(Vector2Int.left);
-        }
-        else if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            Move(Vector2Int.right);
-        }
-
-        if (Input.GetKeyDown(KeyCode.DownArrow) || Time.time > _timeAtWhichAutomaticMovementDownOccurs)
-        {
-            MoveDownOneRow();
-        }
-
+    private void ProcessRotations()
+    {
         if (Input.GetKeyDown(KeyCode.Q))
         {
             Rotate(-1);
@@ -55,14 +49,38 @@ public class Piece : MonoBehaviour
         {
             Rotate(1);
         }
+    }
 
-        Board.DrawPiece(this);
+    private void ProcessTranslations()
+    {
+        if (ShouldProcessInput())
+        {
+            UpdateTimeAtWhichNextInputIsConsidered();
+
+            if (Input.GetKey(KeyCode.DownArrow))
+            {
+                MoveDownOneRow();
+            }
+
+            if (Input.GetKey(KeyCode.LeftArrow))
+            {
+                Move(Vector2Int.left);
+            }
+            else if (Input.GetKey(KeyCode.RightArrow))
+            {
+                Move(Vector2Int.right);
+            }
+        }
+
+        if (ShouldMoveDownAutomatically())
+        {
+            MoveDownOneRow();
+        }
     }
 
     private void MoveDownOneRow()
     {
         UpdateTimeAtWhichAutomaticMovementDownOccurs();
-
         if (Move(Vector2Int.down))
         {
             UpdateTimeAtWhichLockOccurs();
@@ -100,7 +118,7 @@ public class Piece : MonoBehaviour
 
     private void TryLock()
     {
-        if (!(Time.time > _timeAtWhichLockOccurs)) return;
+        if (!(ShouldLock())) return;
         Board.DrawPiece(this);
         Board.ClearLines();
         Board.SpawnPiece();
@@ -114,7 +132,8 @@ public class Piece : MonoBehaviour
         {
             var translation = TetrominoData.WallKicks[wallKickIndex, i];
 
-            if (Move(translation)) {
+            if (Move(translation))
+            {
                 return true;
             }
         }
@@ -126,13 +145,14 @@ public class Piece : MonoBehaviour
     {
         var wallKickIndex = rotationIndex * 2;
 
-        if (rotationDirection < 0) {
+        if (rotationDirection < 0)
+        {
             wallKickIndex--;
         }
 
         return Wrap(wallKickIndex, 0, TetrominoData.WallKicks.GetLength(0));
     }
-    
+
     private void ApplyRotationMatrix(int direction)
     {
         var matrix = TetrominosCoordinates.RotationMatrix;
@@ -168,26 +188,48 @@ public class Piece : MonoBehaviour
             Cells[i] = new Vector3Int(x, y, 0);
         }
     }
-    
+
     private int Wrap(int input, int min, int max)
     {
-        if (input < min) {
+        if (input < min)
+        {
             return max - (min - input) % (max - min);
-        } else {
+        }
+        else
+        {
             return min + (input - min) % (max - min);
         }
     }
-    
+
     private void UpdateTimeAtWhichAutomaticMovementDownOccurs()
     {
         _timeAtWhichAutomaticMovementDownOccurs = Time.time + automaticMovementDownStepDelay;
+    }
+
+    private bool ShouldMoveDownAutomatically()
+    {
+        return Time.time > _timeAtWhichAutomaticMovementDownOccurs;
+    }
+
+    private void UpdateTimeAtWhichNextInputIsConsidered()
+    {
+        _timeAtWhichNextInputIsConsidered = Time.time + delayBetweenSameInputWhenKeyIsHold;
+    }
+
+    private bool ShouldProcessInput()
+    {
+        return Time.time > _timeAtWhichNextInputIsConsidered;
     }
     
     private void UpdateTimeAtWhichLockOccurs()
     {
         _timeAtWhichLockOccurs = Time.time + lockThePieceAfterCollisionDelay;
     }
-    
+
+    private bool ShouldLock()
+    {
+        return Time.time > _timeAtWhichLockOccurs;
+    }
     private void SetCells()
     {
         for(var i = 0; i < Cells.Length; i++)
@@ -195,5 +237,4 @@ public class Piece : MonoBehaviour
             Cells[i] = (Vector3Int) TetrominoData.cells[i];
         }
     }
-
 }
