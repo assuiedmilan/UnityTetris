@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Piece : MonoBehaviour
 {
@@ -103,6 +102,7 @@ public class Piece : MonoBehaviour
     {
         if (!(Time.time > _timeAtWhichLockOccurs)) return;
         Board.DrawPiece(this);
+        Board.ClearLines();
         Board.SpawnPiece();
     }
 
