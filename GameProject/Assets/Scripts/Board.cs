@@ -60,11 +60,10 @@ public class Board : MonoBehaviour
         return !_boundaries.Contains((Vector2Int)cellToCheck) || Tilemap.HasTile(cellToCheck);
     }
     
-    private void SpawnPiece()
+    public void SpawnPiece()
     {
         var shapeIndex = Random.Range(1, tetrominos.Length);
         CurrentPiece.Initialize(this, spawnPosition, tetrominos[shapeIndex]);
-        DrawPiece(CurrentPiece);
     }
     
     /*private void SpawnDebugPiece()

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class Piece : MonoBehaviour
 {
@@ -7,21 +8,25 @@ public class Piece : MonoBehaviour
     public Vector3Int[] Cells { get; private set; }
     public Vector3Int CenterCoordinates { get; private set; }
     public int RotationIndex { get; private set; }
-    
+
     public float automaticMovementDownStepDelay = 1f;
+    public float lockThePieceAfterCollisionDelay = 0.5f;
+
     private float _timeAtWhichAutomaticMovementDownOccurs;
-    
+    private float _timeAtWhichLockOccurs;
+
     public void Initialize(Board board, Vector3Int position, TetrominoData data)
     {
         Board = board;
         CenterCoordinates = position;
         TetrominoData = data;
         RotationIndex = 0;
-        
+
         Cells ??= new Vector3Int[TetrominoData.cells.Length];
 
         UpdateTimeAtWhichAutomaticMovementDownOccurs();
-        
+        UpdateTimeAtWhichLockOccurs();
+
         SetCells();
     }
 
@@ -37,7 +42,7 @@ public class Piece : MonoBehaviour
         {
             Move(Vector2Int.right);
         }
-        
+
         if (Input.GetKeyDown(KeyCode.DownArrow) || Time.time > _timeAtWhichAutomaticMovementDownOccurs)
         {
             MoveDownOneRow();
@@ -51,19 +56,28 @@ public class Piece : MonoBehaviour
         {
             Rotate(1);
         }
+
         Board.DrawPiece(this);
     }
 
     private void MoveDownOneRow()
     {
         UpdateTimeAtWhichAutomaticMovementDownOccurs();
-        Move(Vector2Int.down);
+
+        if (Move(Vector2Int.down))
+        {
+            UpdateTimeAtWhichLockOccurs();
+        }
+        else
+        {
+            TryLock();
+        }
     }
 
     private bool Move(Vector2Int movement)
     {
         var newPosition = new Vector3Int(CenterCoordinates.x + movement.x, CenterCoordinates.y + movement.y, 0);
-        
+
         if (Board.IsPositionInValid(this, newPosition))
         {
             return false;
@@ -80,11 +94,18 @@ public class Piece : MonoBehaviour
         ApplyRotationMatrix(direction);
 
         if (TestWallKicks(RotationIndex, direction)) return;
-        
+
         RotationIndex = originalRotation;
         ApplyRotationMatrix(-direction);
     }
-    
+
+    private void TryLock()
+    {
+        if (!(Time.time > _timeAtWhichLockOccurs)) return;
+        Board.DrawPiece(this);
+        Board.SpawnPiece();
+    }
+
     private bool TestWallKicks(int rotationIndex, int rotationDirection)
     {
         var wallKickIndex = GetWallKickIndex(rotationIndex, rotationDirection);
@@ -160,6 +181,11 @@ public class Piece : MonoBehaviour
     private void UpdateTimeAtWhichAutomaticMovementDownOccurs()
     {
         _timeAtWhichAutomaticMovementDownOccurs = Time.time + automaticMovementDownStepDelay;
+    }
+    
+    private void UpdateTimeAtWhichLockOccurs()
+    {
+        _timeAtWhichLockOccurs = Time.time + lockThePieceAfterCollisionDelay;
     }
     
     private void SetCells()

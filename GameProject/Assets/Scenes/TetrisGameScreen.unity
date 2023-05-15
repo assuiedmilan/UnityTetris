@@ -729,24 +729,21 @@ MonoBehaviour:
     tile: {fileID: 11400000, guid: eaf6b627b8abcdd46bc7e22eb9862a3c, type: 2}
     cells: []
   - tetromino: 1
-    tile: {fileID: 11400000, guid: eaf6b627b8abcdd46bc7e22eb9862a3c, type: 2}
+    tile: {fileID: 11400000, guid: 62ef1a6b3791f0343b42d52fd99680b3, type: 2}
     cells: []
   - tetromino: 2
     tile: {fileID: 11400000, guid: 62ef1a6b3791f0343b42d52fd99680b3, type: 2}
     cells: []
   - tetromino: 3
-    tile: {fileID: 11400000, guid: 31df754067981334db147879a6a14f03, type: 2}
-    cells: []
-  - tetromino: 4
     tile: {fileID: 11400000, guid: ad54715330f33f6419d92e2da6fd1d38, type: 2}
     cells: []
-  - tetromino: 5
+  - tetromino: 4
     tile: {fileID: 11400000, guid: e004ea40440c1884f9f00e58f2c6fb2d, type: 2}
     cells: []
-  - tetromino: 6
+  - tetromino: 5
     tile: {fileID: 11400000, guid: 7e69daec662e32b448f4021eec4580ab, type: 2}
     cells: []
-  - tetromino: 7
+  - tetromino: 6
     tile: {fileID: 11400000, guid: d65dfb51908be1b458fe04b87903f405, type: 2}
     cells: []
   spawnPosition: {x: 0, y: 8, z: 0}
@@ -764,3 +761,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   automaticMovementDownStepDelay: 1
+  lockThePieceAfterCollisionDelay: 0.5
